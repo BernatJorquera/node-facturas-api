@@ -88,6 +88,8 @@ const getFacturas = (tipo) => {
   }
 };
 
+const getFactura = id => facturas.find(factura => factura.id === id);
+
 const postFactura = (nuevaFactura, posicionFactura) => {
   const respuesta = {
     error: false,
@@ -124,9 +126,17 @@ const sustituirFactura = (nuevaFactura, idParam) => {
   return respuesta;
 };
 
+const borraFactura = id => {
+  const facturaABorrar = facturas.find(factura => factura.id === id);
+  facturas.filter(factura => factura.id !== id);
+  return facturaABorrar;
+};
+
 module.exports = {
   getFacturas,
+  getFactura,
   getFacturaSchema,
   postFactura,
-  sustituirFactura
+  sustituirFactura,
+  borraFactura
 };

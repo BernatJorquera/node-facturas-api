@@ -3,7 +3,7 @@ const debug = require("debug")("facturas:facturas");
 const { checkSchema, validationResult } = require("express-validator");
 const { generaError, badRequestError } = require("../utils/errores");
 const {
-  getFacturas, getFacturaSchema, postFactura, sustituirFactura
+  getFacturas, getFactura, getFacturaSchema, postFactura, sustituirFactura, borraFactura
 } = require("../controladores/facturas");
 
 const router = express.Router();
@@ -12,6 +12,14 @@ router.get("/:tipo?", (req, res, next) => {
   const respuesta = getFacturas(req.params.tipo);
   if (!respuesta) {
     const error = generaError("Endpoint no válido (endpoints válidos: ingresos, gastos)", 404);
+    return next(error);
+  }
+  return res.json(respuesta);
+});
+router.get("/factura/:id", (req, res, next) => {
+  const respuesta = getFactura(+req.params.id);
+  if (!respuesta) {
+    const error = generaError("El id introducido no corresponde a ninguna factura", 404);
     return next(error);
   }
   return res.json(respuesta);
@@ -40,5 +48,13 @@ router.put("/factura/:idFactura",
       return res.status(201).json(respuesta.factura);
     }
   });
+router.delete("/factura/:id", (req, res, next) => {
+  const respuesta = borraFactura(+req.params.id);
+  if (!respuesta) {
+    const error = generaError("El id introducido no corresponde a ninguna factura", 404);
+    return next(error);
+  }
+  return res.json(respuesta);
+});
 
 module.exports = router;
