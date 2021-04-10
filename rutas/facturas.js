@@ -15,12 +15,11 @@ const {
 const router = express.Router();
 
 router.get("/:tipo?", (req, res, next) => {
-  const respuesta = getFacturas(req.params.tipo);
-  if (!respuesta) {
-    const error = generaError("Endpoint no válido (endpoints válidos: ingresos, gastos)", 404);
+  const { error, total, datos } = getFacturas(req.params.tipo, req.query);
+  if (error) {
     return next(error);
   }
-  return res.json(respuesta);
+  return res.json({ total, datos });
 });
 router.get("/factura/:idFactura", (req, res, next) => {
   const respuesta = getFactura(+req.params.idFactura);

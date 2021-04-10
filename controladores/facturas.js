@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 const { facturas } = require("../facturas.json");
 const { generaError } = require("../utils/errores");
 
@@ -68,24 +69,71 @@ const getFacturaSchema = (requiereId, noEsPatch) => {
   };
 };
 
-const getFacturas = (tipo) => {
+const pasarFiltroQuery = (facturas, query) => {
+  const respuesta = {
+    error: false,
+    facturas
+  };
+  const {
+    abonadas, vencidas, ordenPor, orden, nPorPagina, pagina
+  } = query;
+  const conAbonadas = abonadas ? (abonadas === "true" || abonadas === "false") : true;
+  const conVencidas = vencidas ? (vencidas === "true" || vencidas === "false") : true;
+  const conOrdenPor = ordenPor ? (ordenPor === "fecha" || ordenPor === "base") : true;
+  const conOrden = orden ? (orden === "asc" || orden === "desc") : true;
+  const conPorPagina = nPorPagina
+    // eslint-disable-next-line radix
+    ? (!isNaN(nPorPagina) && +nPorPagina === parseInt(+nPorPagina) && +nPorPagina > 0)
+    : true;
+  const conPagina = pagina
+    // eslint-disable-next-line radix
+    ? (!isNaN(pagina) && +pagina === parseInt(+pagina) && +pagina > 0 && +pagina < +nPorPagina)
+    : true;
+  const condicionTotal = conAbonadas && conVencidas && conOrdenPor && conOrden && conPorPagina && conPagina;
+  if (condicionTotal) {
+    respuesta.facturas = facturas
+      .filter(factura => (abonadas ? (factura.abonada ? "true" : "false") === abonadas : true)
+        && (vencidas ? (factura.vencimiento ? "true" : "false") === vencidas : true))
+      .sort((f1, f2) => f1[ordenPor] - f2[ordenPor]);
+    if (ordenPor && orden === "desc") {
+      respuesta.facturas.reverse();
+    }
+    if (nPorPagina) {
+      const pagDefault = pagina || 1;
+      respuesta.facturas = respuesta.facturas.slice(+nPorPagina * (+pagDefault - 1), +nPorPagina * (+pagDefault));
+    }
+  } else {
+    respuesta.error = generaError("La query introducida no es correcta", 400);
+  }
+  return respuesta;
+};
+
+const getFacturas = (tipo, query) => {
   if (tipo === "ingresos") {
     const ingresos = facturas.filter(factura => factura.tipo === "ingreso");
+    const { error, facturas: ingresosFiltrados } = pasarFiltroQuery(ingresos, query);
     return {
-      total: ingresos.length,
-      datos: ingresos
+      error,
+      total: ingresosFiltrados.length,
+      datos: ingresosFiltrados
     };
   } else if (tipo === "gastos") {
     const gastos = facturas.filter(factura => factura.tipo === "gasto");
+    const { error, facturas: gastosFiltrados } = pasarFiltroQuery(gastos, query);
     return {
-      total: gastos.length,
-      datos: gastos
+      error,
+      total: gastosFiltrados.length,
+      datos: gastosFiltrados
     };
   } else if (!tipo) {
+    const { error, facturas: facturasFiltradas } = pasarFiltroQuery(facturas, query);
     return {
-      total: facturas.length,
-      datos: facturas
+      error,
+      total: facturasFiltradas.length,
+      datos: facturasFiltradas
     };
+  } else {
+    return { error: generaError("Endpoint no válido (endpoints válidos: ingresos, gastos)", 404) };
   }
 };
 
