@@ -88,14 +88,45 @@ const getFacturas = (tipo) => {
   }
 };
 
-const postFactura = nuevaFactura => {
+const postFactura = (nuevaFactura, posicionFactura) => {
+  const respuesta = {
+    error: false,
+    factura: null
+  };
   nuevaFactura.id = nuevaFactura.id || facturas[facturas.length - 1].id + 1;
-  facturas.push(nuevaFactura);
-  return nuevaFactura;
+  const facturaConflictiva = facturas.find(factura => factura.id === nuevaFactura.id);
+  if (!facturaConflictiva) {
+    if (posicionFactura) {
+      facturas[posicionFactura] = nuevaFactura;
+    } else {
+      facturas.push(nuevaFactura);
+    }
+    respuesta.factura = nuevaFactura;
+  } else {
+    respuesta.error = generaError("La id introducida ya corresponde a otra factura", 409);
+  }
+  return respuesta;
+};
+
+const sustituirFactura = (nuevaFactura, idParam) => {
+  let respuesta = {
+    error: false,
+    factura: null
+  };
+  const facturaCoincidente = facturas
+    .map((factura, i) => [factura, i])
+    .find(factura => factura[0].id === idParam);
+  if (facturaCoincidente) {
+    respuesta = postFactura(nuevaFactura, facturaCoincidente[1]);
+  } else {
+    respuesta = postFactura(nuevaFactura);
+  }
+  return respuesta;
 };
 
 module.exports = {
   getFacturas,
   getFacturaSchema,
-  postFactura
+  postFactura,
+  sustituirFactura
 };
