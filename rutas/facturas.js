@@ -1,7 +1,8 @@
 const express = require("express");
 const debug = require("debug")("facturas:facturas");
-const { generaError } = require("../utils/errores");
-const { getFacturas, postFactura } = require("../controladores/facturas");
+const { checkSchema, validationResult } = require("express-validator");
+const { generaError, badRequestError } = require("../utils/errores");
+const { getFacturas, getFacturaSchema, postFactura } = require("../controladores/facturas");
 
 const router = express.Router();
 
@@ -13,10 +14,15 @@ router.get("/:tipo?", (req, res, next) => {
   }
   return res.json(respuesta);
 });
-router.post("/", (req, res, next) => {
-  /* primero se debería comprobar el schema con validator y si no es adecuado devolver un badRequestError */
-  const nuevaFactura = postFactura(req.body);
-  return res.status(201).json(nuevaFactura);
-});
+router.post("/factura",
+  checkSchema(getFacturaSchema(false)),
+  (req, res, next) => {
+    const error = badRequestError(req);
+    if (error) {
+      return next(error);
+    }
+    const nuevaFactura = postFactura(req.body);
+    return res.status(201).json(nuevaFactura);
+  });
 
 module.exports = router;

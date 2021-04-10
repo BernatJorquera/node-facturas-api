@@ -7,6 +7,15 @@ const generaError = (mensaje, status) => {
   return error;
 };
 
+const badRequestError = req => {
+  const errores = validationResult(req);
+  let error;
+  if (!errores.isEmpty()) {
+    error = generaError("La factura no tiene la forma correcta", 400);
+  }
+  return error;
+};
+
 const manejaErrores = (err, req, res, next) => {
   const error = {
     codigo: err.codigo || 500,
@@ -17,5 +26,6 @@ const manejaErrores = (err, req, res, next) => {
 
 module.exports = {
   generaError,
+  badRequestError,
   manejaErrores
 };
