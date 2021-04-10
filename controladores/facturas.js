@@ -1,17 +1,17 @@
 const { facturas } = require("../facturas.json");
 const { generaError } = require("../utils/errores");
 
-const getFacturaSchema = (requiereId) => {
+const getFacturaSchema = (requiereId, noEsPatch) => {
   const id = {
     [requiereId ? "exists" : "optional"]: true,
     isInt: true
   };
   const numero = {
-    exists: true,
+    [noEsPatch ? "exists" : "optional"]: true,
     isInt: true
   };
   const fecha = {
-    exists: true,
+    [noEsPatch ? "exists" : "optional"]: true,
     isInt: true,
     isLength: {
       options: {
@@ -31,7 +31,7 @@ const getFacturaSchema = (requiereId) => {
     }
   };
   const base = {
-    exists: true,
+    [noEsPatch ? "exists" : "optional"]: true,
     isFloat: {
       options: {
         min: 0
@@ -39,7 +39,7 @@ const getFacturaSchema = (requiereId) => {
     }
   };
   const tipoIva = {
-    exists: true,
+    [noEsPatch ? "exists" : "optional"]: true,
     isInt: {
       options: {
         min: 0
@@ -47,12 +47,13 @@ const getFacturaSchema = (requiereId) => {
     }
   };
   const tipo = {
+    [noEsPatch ? "exists" : "optional"]: true,
     custom: {
       options: value => value === "gasto" || value === "ingreso"
     }
   };
   const abonada = {
-    exists: true,
+    [noEsPatch ? "exists" : "optional"]: true,
     isBoolean: true
   };
   return {
@@ -105,7 +106,7 @@ const postFactura = (nuevaFactura, posicionFactura) => {
     }
     respuesta.factura = nuevaFactura;
   } else {
-    respuesta.error = generaError("La id introducida ya corresponde a otra factura", 409);
+    respuesta.error = generaError("El id introducida ya corresponde a otra factura", 409);
   }
   return respuesta;
 };
@@ -126,8 +127,34 @@ const sustituirFactura = (nuevaFactura, idParam) => {
   return respuesta;
 };
 
-const borraFactura = id => {
-  const facturaABorrar = facturas.find(factura => factura.id === id);
+const modificarFactura = (modificaciones, id) => {
+  const respuesta = {
+    error: false,
+    factura: null
+  };
+  const facturaAModificar = facturas
+    .map((factura, i) => [factura, i])
+    .find(factura => factura[0].id === id);
+  if (facturaAModificar) {
+    const facturaConflictiva = (modificaciones.id !== id)
+      && facturas.find(factura => factura.id === modificaciones.id);
+    if (facturaConflictiva) {
+      respuesta.error = generaError("El id introducida ya corresponde a otra factura", 409);
+    }
+    const facturaModificada = {
+      ...facturaAModificar[0],
+      ...modificaciones
+    };
+    facturas[facturaAModificar[1]] = facturaModificada;
+    respuesta.factura = facturaModificada;
+  } else {
+    respuesta.error = generaError("El id introducido no corresponde a ninguna factura", 404);
+  }
+  return respuesta;
+};
+
+const borrarFactura = id => {
+  const facturaABorrar = facturas.find(factura => factura[0].id === id);
   facturas.filter(factura => factura.id !== id);
   return facturaABorrar;
 };
@@ -138,5 +165,6 @@ module.exports = {
   getFacturaSchema,
   postFactura,
   sustituirFactura,
-  borraFactura
+  modificarFactura,
+  borrarFactura
 };
