@@ -17,22 +17,21 @@ const getFacturas = async (tipo, query) => {
 
 const getFactura = id => facturas.find(factura => factura.id === id);
 
-const postFactura = (nuevaFactura, posicionFactura) => {
+const postFactura = async nuevaFactura => {
   const respuesta = {
-    error: false,
-    factura: null
+    factura: null,
+    error: null
   };
-  nuevaFactura.id = nuevaFactura.id || facturas[facturas.length - 1].id + 1;
-  const facturaConflictiva = facturas.find(factura => factura.id === nuevaFactura.id);
-  if (!facturaConflictiva) {
-    if (posicionFactura) {
-      facturas[posicionFactura] = nuevaFactura;
-    } else {
-      facturas.push(nuevaFactura);
+  const facturaEncontrada = await Factura.findOne({
+    where: {
+      id: nuevaFactura.id
     }
-    respuesta.factura = nuevaFactura;
-  } else {
+  });
+  if (facturaEncontrada) {
     respuesta.error = generaError("El id introducida ya corresponde a otra factura", 409);
+  } else {
+    const nuevaFacturaBD = await Factura.create(nuevaFactura);
+    respuesta.factura = nuevaFacturaBD;
   }
   return respuesta;
 };

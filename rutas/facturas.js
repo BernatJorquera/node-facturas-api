@@ -31,13 +31,18 @@ router.get("/factura/:idFactura", (req, res, next) => {
 });
 router.post("/factura",
   checkSchema(getFacturaSchema(false, true)),
-  (req, res, next) => {
+  async (req, res, next) => {
     const error = badRequestError(req);
     if (error) {
       return next(error);
     }
-    const nuevaFactura = postFactura(req.body);
-    return res.status(201).json(nuevaFactura);
+    const respuesta = await postFactura(req.body);
+    console.log(respuesta);
+    if (respuesta.error) {
+      return next(respuesta.error);
+    } else {
+      return res.status(201).json(respuesta.factura);
+    }
   });
 router.put("/factura/:idFactura",
   checkSchema(getFacturaSchema(true, true)),
