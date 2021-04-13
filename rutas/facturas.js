@@ -2,20 +2,20 @@ const express = require("express");
 const debug = require("debug")("facturas:facturas");
 const { checkSchema, validationResult } = require("express-validator");
 const { generaError, badRequestError } = require("../utils/errores");
+const { getFacturaSchema } = require("../schemas/facturaSchema");
 const {
   getFacturas,
   getFactura,
-  getFacturaSchema,
   postFactura,
   sustituirFactura,
   modificarFactura,
   borrarFactura
-} = require("../controladores/facturas");
+} = require("../controladores/facturasSQL");
 
 const router = express.Router();
 
-router.get("/:tipo?", (req, res, next) => {
-  const { error, total, datos } = getFacturas(req.params.tipo, req.query);
+router.get("/:tipo?", async (req, res, next) => {
+  const { error, total, datos } = await getFacturas(req.params.tipo, req.query);
   if (error) {
     return next(error);
   }

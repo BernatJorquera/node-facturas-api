@@ -2,73 +2,6 @@
 const { facturas } = require("../facturas.json");
 const { generaError } = require("../utils/errores");
 
-const getFacturaSchema = (requiereId, noEsPatch) => {
-  const id = {
-    [requiereId ? "exists" : "optional"]: true,
-    isInt: true
-  };
-  const numero = {
-    [noEsPatch ? "exists" : "optional"]: true,
-    isInt: true
-  };
-  const fecha = {
-    [noEsPatch ? "exists" : "optional"]: true,
-    isInt: true,
-    isLength: {
-      options: {
-        min: 13,
-        max: 13
-      }
-    }
-  };
-  const vencimiento = {
-    optional: true,
-    isInt: true,
-    isLength: {
-      options: {
-        min: 13,
-        max: 13
-      }
-    }
-  };
-  const base = {
-    [noEsPatch ? "exists" : "optional"]: true,
-    isFloat: {
-      options: {
-        min: 0
-      }
-    }
-  };
-  const tipoIva = {
-    [noEsPatch ? "exists" : "optional"]: true,
-    isInt: {
-      options: {
-        min: 0
-      }
-    }
-  };
-  const tipo = {
-    [noEsPatch ? "exists" : "optional"]: true,
-    custom: {
-      options: value => value === "gasto" || value === "ingreso"
-    }
-  };
-  const abonada = {
-    [noEsPatch ? "exists" : "optional"]: true,
-    isBoolean: true
-  };
-  return {
-    id,
-    numero,
-    fecha,
-    vencimiento,
-    base,
-    tipoIva,
-    tipo,
-    abonada
-  };
-};
-
 const pasarFiltroQuery = (facturas, query) => {
   const respuesta = {
     error: false,
@@ -108,7 +41,7 @@ const pasarFiltroQuery = (facturas, query) => {
   return respuesta;
 };
 
-const getFacturas = (tipo, query) => {
+const getFacturas = async (tipo, query) => {
   if (tipo === "ingresos") {
     const ingresos = facturas.filter(factura => factura.tipo === "ingreso");
     const { error, facturas: ingresosFiltrados } = pasarFiltroQuery(ingresos, query);
@@ -210,7 +143,6 @@ const borrarFactura = id => {
 module.exports = {
   getFacturas,
   getFactura,
-  getFacturaSchema,
   postFactura,
   sustituirFactura,
   modificarFactura,
