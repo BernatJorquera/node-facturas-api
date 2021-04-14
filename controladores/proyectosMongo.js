@@ -55,11 +55,11 @@ const postProyecto = async nuevoProyecto => {
     proyecto: null,
     error: null
   };
-  const proyectoEncontrado = await Proyecto.findOne({
+  const proyectoCoincidente = await Proyecto.findOne({
     nombre: nuevoProyecto.nombre,
     cliente: nuevoProyecto.cliente
   });
-  if (proyectoEncontrado) {
+  if (proyectoCoincidente) {
     const error = generaError("Ya existe el proyecto", 409);
     respuesta.error = error;
   } else {
@@ -69,8 +69,26 @@ const postProyecto = async nuevoProyecto => {
   return respuesta;
 };
 
+const sustituirProyecto = async (nuevoProyecto, idProyecto) => {
+  const proyectoCoincidente = await Proyecto.findById(idProyecto);
+  const respuesta = {
+    proyecto: null,
+    error: null
+  };
+  if (proyectoCoincidente) {
+    const proyectoSustituido = await proyectoCoincidente.updateOne(nuevoProyecto);
+    respuesta.proyecto = nuevoProyecto;
+  } else {
+    const { proyectoSustituido, error } = await postProyecto(nuevoProyecto);
+    respuesta.proyecto = proyectoSustituido;
+    respuesta.error = error;
+  }
+  return respuesta;
+};
+
 module.exports = {
   getProyectos,
   getProyecto,
-  postProyecto
+  postProyecto,
+  sustituirProyecto
 };

@@ -3,7 +3,9 @@ const debug = require("debug")("facturas:facturas");
 const { checkSchema } = require("express-validator");
 const { generaError, badRequestError } = require("../utils/errores");
 const { getProyectoSchema } = require("../schemas/proyectoSchema");
-const { getProyectos, getProyecto, postProyecto } = require("../controladores/proyectosMongo");
+const {
+  getProyectos, getProyecto, postProyecto, sustituirProyecto
+} = require("../controladores/proyectosMongo");
 
 const router = express.Router();
 
@@ -36,38 +38,38 @@ router.post("/proyecto",
       return res.status(201).json(respuesta.proyecto);
     }
   });
-/* router.put("/factura/:idFactura",
-  checkSchema(getFacturaSchema(true, true)),
+router.put("/proyecto/:idProyecto",
+  checkSchema(getProyectoSchema(true, true)),
+  async (req, res, next) => {
+    const error = badRequestError(req);
+    if (error) {
+      return next(error);
+    }
+    const respuesta = await sustituirProyecto(req.body, req.params.idProyecto);
+    if (respuesta.error) {
+      return next(respuesta.error);
+    } else {
+      return res.status(201).json(respuesta.proyecto);
+    }
+  });
+/* router.patch("/proyecto/:idProyecto",
+  checkSchema(getProyectoSchema(false, false)),
   (req, res, next) => {
     const error = badRequestError(req);
     if (error) {
       return next(error);
     }
-    const respuesta = sustituirFactura(req.body, +req.params.idFactura);
+    const respuesta = modificarProyecto(req.body, +req.params.idProyecto);
     if (respuesta.error) {
       return next(respuesta.error);
     } else {
-      return res.status(201).json(respuesta.factura);
+      return res.status(200).json(respuesta.proyecto);
     }
   });
-router.patch("/factura/:idFactura",
-  checkSchema(getFacturaSchema(false, false)),
-  (req, res, next) => {
-    const error = badRequestError(req);
-    if (error) {
-      return next(error);
-    }
-    const respuesta = modificarFactura(req.body, +req.params.idFactura);
-    if (respuesta.error) {
-      return next(respuesta.error);
-    } else {
-      return res.status(200).json(respuesta.factura);
-    }
-  });
-router.delete("/factura/:idFactura", (req, res, next) => {
-  const respuesta = borrarFactura(+req.params.idFactura);
+router.delete("/proyecto/:idProyecto", (req, res, next) => {
+  const respuesta = borrarProyecto(+req.params.idProyecto);
   if (!respuesta) {
-    const error = generaError("El id introducido no corresponde a ninguna factura", 404);
+    const error = generaError("El id introducido no corresponde a ninguna proyecto", 404);
     return next(error);
   }
   return res.json(respuesta);
