@@ -1,0 +1,115 @@
+[
+  {
+    "nombre": "Web de Chocolate Biscuits",
+    "estado": "wip",
+    "aprobado": "1612172949000",
+    "entrega": "1623404949000",
+    "cliente": "Chocolate Biscuits",
+    "tecnologias": [
+      "MySQL",
+      "PHP",
+      "JS",
+      "Bootstrap"
+    ]
+  },
+  {
+    "nombre": "App de gestión de reuniones",
+    "estado": "pendiente",
+    "aprobado": "1617270549000",
+    "entrega": "1633081749000",
+    "cliente": "MicroIberia",
+    "tecnologias": [
+      "MySQL",
+      "Node.js",
+      "JS",
+      "React",
+      "Bootstrap"
+    ]
+  },
+  {
+    "nombre": "App controladora de cámaras",
+    "estado": "finalizado",
+    "aprobado": "1578910719000",
+    "entrega": "1601547519000",
+    "cliente": "Pallex",
+    "tecnologias": [
+      "MongoDB",
+      "Node.js",
+      "JS"
+    ]
+  },
+  {
+    "nombre": "Auditoría performance web pepsi-light.com",
+    "estado": "finalizado",
+    "aprobado": "1607595519000",
+    "entrega": "1610273919000",
+    "cliente": "Pepsico",
+    "tecnologias": [
+      "Lighthouse"
+    ]
+  },
+  {
+    "nombre": "Blog personal manuelsanchez.com",
+    "estado": "pendiente",
+    "aprobado": "1617963519000",
+    "entrega": "1623233919000",
+    "cliente": "Manuel Sánchez Ferlosio",
+    "tecnologias": [
+      "MySQL",
+      "PHP",
+      "WordPress"
+    ]
+  },
+  {
+    "nombre": "Landing page promoción SwissAuto",
+    "estado": "wip",
+    "aprobado": "1617531519000",
+    "entrega": "1618481919000",
+    "cliente": "Swiss Auto",
+    "tecnologias": [
+      "Bootstrap",
+      "JS"
+    ]
+  },
+  {
+    "nombre": "App Pegasus",
+    "estado": "wip",
+    "aprobado": "1610705919000",
+    "entrega": "1639563519000",
+    "cliente": "Featuring Systems",
+    "tecnologias": [
+      "MongoDB",
+      "Node.js",
+      "Bootstrap",
+      "JS",
+      "React"
+    ]
+  },
+  {
+    "nombre": "Dashboard ocupación hospitales",
+    "estado": "pendiente",
+    "aprobado": "1615803519000",
+    "entrega": "1630491519000",
+    "cliente": "Institut Català de la Salut",
+    "tecnologias": [
+      "MongoDB",
+      "Node.js",
+      "JS",
+      "React"
+    ]
+  },
+  {
+    "nombre": "App Cuentapasos",
+    "estado": "pendiente",
+    "aprobado": "1606817919000",
+    "entrega": "1619777919000",
+    "cliente": "Health&Care",
+    "tecnologias": [
+      "MongoDB",
+      "Node.js",
+      "JS",
+      "Bootstrap",
+      "React"
+    ]
+  }
+]
