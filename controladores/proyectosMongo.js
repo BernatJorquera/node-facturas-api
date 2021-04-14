@@ -9,6 +9,30 @@ const getProyectos = async (tipo) => {
       total: proyectos.length,
       datos: proyectos
     };
+  } else if (tipo === "pendientes") {
+    const error = null;
+    const proyectos = await Proyecto.find({ estado: "pendiente" });
+    return {
+      error,
+      total: proyectos.length,
+      datos: proyectos
+    };
+  } else if (tipo === "en-progreso") {
+    const error = null;
+    const proyectos = await Proyecto.find({ estado: "wip" });
+    return {
+      error,
+      total: proyectos.length,
+      datos: proyectos
+    };
+  } else if (tipo === "finalizados") {
+    const error = null;
+    const proyectos = await Proyecto.find({ estado: "finalizado" });
+    return {
+      error,
+      total: proyectos.length,
+      datos: proyectos
+    };
   }
 };
 
