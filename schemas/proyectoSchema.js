@@ -1,12 +1,12 @@
-const getProyectoSchema = () => {
+const getProyectoSchema = noEsPatch => {
   const nombre = {
-    exists: true
+    [noEsPatch ? "exists" : "optional"]: true
   };
   const estado = {
-    exists: true
+    [noEsPatch ? "exists" : "optional"]: true
   };
   const aprobado = {
-    exists: true,
+    [noEsPatch ? "exists" : "optional"]: true,
     isInt: true,
     isLength: {
       options: {
@@ -16,7 +16,7 @@ const getProyectoSchema = () => {
     }
   };
   const entrega = {
-    exists: true,
+    [noEsPatch ? "exists" : "optional"]: true,
     isInt: true,
     isLength: {
       options: {
@@ -26,10 +26,10 @@ const getProyectoSchema = () => {
     }
   };
   const cliente = {
-    exists: true
+    [noEsPatch ? "exists" : "optional"]: true
   };
   const tecnologias = {
-    exists: true,
+    [noEsPatch ? "exists" : "optional"]: true,
     custom: {
       options: value => Array.isArray(value)
     }

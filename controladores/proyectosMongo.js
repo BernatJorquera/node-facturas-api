@@ -70,11 +70,11 @@ const postProyecto = async nuevoProyecto => {
 };
 
 const sustituirProyecto = async (nuevoProyecto, idProyecto) => {
-  const proyectoCoincidente = await Proyecto.findById(idProyecto);
   const respuesta = {
     proyecto: null,
     error: null
   };
+  const proyectoCoincidente = await Proyecto.findById(idProyecto);
   if (proyectoCoincidente) {
     const proyectoSustituido = await proyectoCoincidente.updateOne(nuevoProyecto);
     respuesta.proyecto = nuevoProyecto;
@@ -86,9 +86,34 @@ const sustituirProyecto = async (nuevoProyecto, idProyecto) => {
   return respuesta;
 };
 
+const modificarProyecto = async (modificaciones, idProyecto) => {
+  const respuesta = {
+    proyecto: null,
+    error: null
+  };
+  const proyectoCoincidente = await Proyecto.findByIdAndUpdate(idProyecto, modificaciones);
+  if (proyectoCoincidente) {
+    respuesta.proyecto = {
+      ...proyectoCoincidente,
+      ...modificaciones
+    }._doc;
+  } else {
+    const error = generaError("El proyecto solicitado no existe", 404);
+    respuesta.error = error;
+  }
+  return respuesta;
+};
+
+const borrarProyecto = async idProyecto => {
+  const proyectoCoincidente = await Proyecto.findByIdAndDelete(idProyecto);
+  return proyectoCoincidente;
+};
+
 module.exports = {
   getProyectos,
   getProyecto,
   postProyecto,
-  sustituirProyecto
+  sustituirProyecto,
+  modificarProyecto,
+  borrarProyecto
 };

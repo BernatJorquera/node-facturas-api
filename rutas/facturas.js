@@ -72,13 +72,14 @@ router.patch("/factura/:idFactura",
       return res.status(200).json(respuesta.factura);
     }
   });
-router.delete("/factura/:idFactura", (req, res, next) => {
-  const respuesta = borrarFactura(+req.params.idFactura);
-  if (!respuesta) {
-    const error = generaError("El id introducido no corresponde a ninguna factura", 404);
-    return next(error);
-  }
-  return res.json(respuesta);
-});
+router.delete("/factura/:idFactura",
+  (req, res, next) => {
+    const respuesta = borrarFactura(+req.params.idFactura);
+    if (!respuesta) {
+      const error = generaError("El id introducido no corresponde a ninguna factura", 404);
+      return next(error);
+    }
+    return res.json(respuesta);
+  });
 
 module.exports = router;
