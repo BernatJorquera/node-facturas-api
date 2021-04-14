@@ -6,7 +6,9 @@ const { program } = require("commander");
 const morgan = require("morgan");
 const cors = require("cors");
 const rutasFacturas = require("./rutas/facturas");
+const rutasProyectos = require("./rutas/proyectos");
 const { manejaErrores } = require("./utils/errores");
+require("./db/dbMongo");
 
 program.option("-p", "--puerto <puerto>", "Puerto para el servidor");
 program.parse(process.argv);
@@ -30,6 +32,7 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 app.use("/facturas", rutasFacturas);
+app.use("/proyectos", rutasProyectos);
 app.use("/", (req, res, next) => {
   res.json("Has pedido algo de la página principal");
 });
