@@ -11,14 +11,14 @@ const badRequestError = req => {
   const errores = validationResult(req);
   let error;
   if (!errores.isEmpty()) {
-    error = generaError("La factura no tiene la forma correcta", 400);
+    error = generaError("El objeto introducido no tiene la forma correcta", 400);
   }
   return error;
 };
 
 const manejaErrores = (err, req, res, next) => {
   if (err.type === "entity.parse.failed") {
-    return res.status(400).json({ error: true, mensaje: "La factura no tiene la forma correcta" });
+    return res.status(400).json({ error: true, mensaje: "El objeto introducido no tiene la forma correcta" });
   }
   const error = {
     codigo: err.codigo || 500,

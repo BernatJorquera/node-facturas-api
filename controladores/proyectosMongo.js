@@ -1,4 +1,5 @@
 const Proyecto = require("../db/modelos/proyecto");
+const { generaError } = require("../utils/errores");
 
 const getProyectos = async (tipo) => {
   if (!tipo) {
@@ -33,9 +34,43 @@ const getProyectos = async (tipo) => {
       total: proyectos.length,
       datos: proyectos
     };
+  } else {
+    return {
+      error: generaError(
+        "Endpoint no válido (endpoints válidos: pendientes, en-progreso, finalizados)", 404
+      ),
+      total: null,
+      datos: null
+    };
   }
 };
 
+const getProyecto = async id => {
+  const proyecto = await Proyecto.findById(id, "-_id");
+  return proyecto;
+};
+
+const postProyecto = async nuevoProyecto => {
+  const respuesta = {
+    proyecto: null,
+    error: null
+  };
+  const proyectoEncontrado = await Proyecto.findOne({
+    nombre: nuevoProyecto.nombre,
+    cliente: nuevoProyecto.cliente
+  });
+  if (proyectoEncontrado) {
+    const error = generaError("Ya existe el proyecto", 409);
+    respuesta.error = error;
+  } else {
+    const nuevoProyectoBD = await Proyecto.create(nuevoProyecto);
+    respuesta.proyecto = nuevoProyectoBD;
+  }
+  return respuesta;
+};
+
 module.exports = {
-  getProyectos
+  getProyectos,
+  getProyecto,
+  postProyecto
 };
