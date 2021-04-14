@@ -15,7 +15,7 @@ const {
 const router = express.Router();
 
 router.get("/:tipo?", async (req, res, next) => {
-  const { error, total, datos } = await getProyectos(req.params.tipo);
+  const { error, total, datos } = await getProyectos(req.params.tipo, req.query);
   if (error) {
     return next(error);
   }

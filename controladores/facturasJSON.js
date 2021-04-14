@@ -20,7 +20,7 @@ const pasarFiltroQuery = (facturas, query) => {
     : true;
   const conPagina = pagina
     // eslint-disable-next-line radix
-    ? (!isNaN(pagina) && +pagina === parseInt(+pagina) && +pagina > 0 && +pagina < +nPorPagina)
+    ? (!isNaN(pagina) && +pagina === parseInt(+pagina) && +pagina > 0)
     : true;
   const condicionTotal = conAbonadas && conVencidas && conOrdenPor && conOrden && conPorPagina && conPagina;
   if (condicionTotal) {
